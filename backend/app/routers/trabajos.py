@@ -241,7 +241,7 @@ def actualizar_estado(id_trabajo: int, datos: TrabajoActualizar):
     return _armar_trabajo(sb, res.data[0], incluir_detalle=True)
 
 
-@router.patch("/{id_trabajo}/pago", response_model=TrabajoRespuesta)
+@router.put("/{id_trabajo}/pago", response_model=TrabajoRespuesta)
 def actualizar_pago(id_trabajo: int, datos: PagoActualizar):
     """
     Actualiza el estado de pago de un trabajo (no_pagado / sena / pagado)

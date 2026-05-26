@@ -301,3 +301,22 @@ body {
   width: 100%; border: none; background: none; color: inherit; cursor: pointer;
   font: inherit; text-align: left;
 }
+
+/* ===== Fila expandible en la tabla de Stock ===== */
+.btn-expand {
+  width: 26px; height: 26px; border-radius: 6px; border: 1px solid #e2e8f0;
+  background: #fff; color: var(--texto-sub); cursor: pointer;
+  font-size: 14px; display: inline-flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn-expand:hover { background: #f8fafc; border-color: var(--verde); color: var(--verde-osc); }
+
+.tabla-fila-detalle { background: #f8fafc; }
+.tabla-fila-detalle td { padding: 14px 16px !important; border-bottom: 2px solid #e2e8f0 !important; }
+.tabla-fila-detalle-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 24px;
+}
+.tabla-fila-detalle-grid > div { display: flex; flex-direction: column; gap: 2px; }
+.det-descripcion { grid-column: 1 / -1; }
+.det-label { font-size: 11px; color: var(--texto-sub); font-weight: 600; letter-spacing: 0.3px; }
+.det-valor { font-size: 14px; color: var(--texto); }

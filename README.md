@@ -40,7 +40,8 @@ Ejecutar en el SQL Editor de Supabase, en este orden:
 2. `backend/sql/trabajos_rpc.sql` (funciones RPC del modulo Trabajos)
 3. `backend/sql/migracion_estado_pago.sql` (estado de pago en ingresos)
 4. `backend/sql/migracion_login.sql` (usuario admin para login)
-5. (opcional) `backend/sql/seed_datos_prueba.sql` (clientes y trabajos ficticios)
+5. `backend/sql/migracion_categorias.sql` (tabla de categorías + código de fabricante)
+6. (opcional) `backend/sql/seed_datos_prueba.sql` (clientes y trabajos ficticios)
 
 ### 2. Backend
 ```bash

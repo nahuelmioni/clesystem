@@ -225,6 +225,14 @@ Documentación interactiva auto-generada: `http://localhost:8000/docs`
 | GET | `/api/clientes` | Lista clientes. Query: `buscar` (nombre o apellido) |
 | POST | `/api/clientes` | Alta |
 | PUT | `/api/clientes/{id}` | Edición |
+| DELETE | `/api/clientes/{id}` | Borrar (rechaza si tiene trabajos) |
+
+### Categorías (`/api/categorias`)
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/api/categorias` | Lista categorías activas |
+| POST | `/api/categorias` | Alta (nombre se normaliza a minúsculas) |
+| DELETE | `/api/categorias/{id}` | Borrar (rechaza si hay productos usándola) |
 
 ### Trabajos (`/api/trabajos`)
 | Método | Ruta | Descripción |
@@ -234,7 +242,7 @@ Documentación interactiva auto-generada: `http://localhost:8000/docs`
 | GET | `/api/trabajos/{id}` | Detalle del trabajo + productos usados |
 | POST | `/api/trabajos` | Alta (llama al RPC `crear_trabajo_completo`) |
 | PUT | `/api/trabajos/{id}` | Cambio de estado (no admite "cancelado") |
-| PATCH | `/api/trabajos/{id}/pago` | Actualiza estado_pago + monto + metodo del ingreso |
+| PUT | `/api/trabajos/{id}/pago` | Actualiza estado_pago + monto + metodo del ingreso |
 | DELETE | `/api/trabajos/{id}` | Cancela y revierte stock (RPC `cancelar_trabajo`) |
 
 ### Funciones RPC en PostgreSQL (Supabase)
@@ -270,7 +278,10 @@ Editor de Supabase (después del schema). Define:
      y actualiza el RPC para que lo reciba
   3. `backend/sql/migracion_login.sql` — agrega columnas username y
      password_hash a usuario, crea el usuario admin/admin123
-  4. (opcional) `backend/sql/seed_datos_prueba.sql` — clientes y trabajos
+  4. `backend/sql/migracion_categorias.sql` — crea tabla `categoria`,
+     elimina el CHECK de producto.categoria, agrega columna
+     codigo_fabricante a producto
+  5. (opcional) `backend/sql/seed_datos_prueba.sql` — clientes y trabajos
      ficticios para probar la UI
 
 ### Backend

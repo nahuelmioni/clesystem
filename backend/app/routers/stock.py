@@ -31,6 +31,7 @@ def _armar_respuesta(producto: dict, stock: dict) -> dict:
         "descripcion": producto.get("descripcion"),
         "categoria": producto["categoria"],
         "modelo_auto": producto.get("modelo_auto"),
+        "codigo_fabricante": producto.get("codigo_fabricante"),
         "precio_costo": float(producto.get("precio_costo", 0)),
         "precio_venta": float(producto.get("precio_venta", 0)),
         "activo": producto.get("activo", True),
@@ -71,7 +72,7 @@ def resumen_stock():
 
 @router.get("", response_model=List[ProductoRespuesta])
 def listar_productos(
-    buscar: Optional[str] = Query(None, description="Nombre o categoria"),
+    buscar: Optional[str] = Query(None, description="Nombre o codigo de fabricante"),
     categoria: Optional[str] = Query(None),
     estado: Optional[str] = Query(None, description="en_stock|stock_bajo|sin_stock"),
 ):
@@ -81,7 +82,10 @@ def listar_productos(
     if categoria:
         query = query.eq("categoria", categoria)
     if buscar:
-        query = query.ilike("nombre_producto", f"%{buscar}%")
+        # Buscar por nombre o por codigo de fabricante (mismo patron que clientes)
+        query = query.or_(
+            f"nombre_producto.ilike.%{buscar}%,codigo_fabricante.ilike.%{buscar}%"
+        )
     productos = query.order("nombre_producto").execute()
 
     resultado = []
@@ -110,6 +114,7 @@ def crear_producto(datos: ProductoCrear):
         "descripcion": datos.descripcion,
         "categoria": datos.categoria,
         "modelo_auto": datos.modelo_auto,
+        "codigo_fabricante": datos.codigo_fabricante,
         "precio_costo": datos.precio_costo,
         "precio_venta": datos.precio_venta,
         "activo": datos.activo,
@@ -145,7 +150,7 @@ def actualizar_producto(id_producto: int, datos: ProductoActualizar):
         for k, v in datos.model_dump(exclude_unset=True).items()
         if k in {
             "nombre_producto", "descripcion", "categoria", "modelo_auto",
-            "precio_costo", "precio_venta", "activo",
+            "codigo_fabricante", "precio_costo", "precio_venta", "activo",
         }
     }
     if campos_prod:

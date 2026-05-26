@@ -91,9 +91,12 @@ export default function Inicio() {
           <Link to="/ingresos" className="acceso">
             💲 <span>Ver Ingresos</span>
           </Link>
-          <div className="acceso acceso-disabled" title="Próximamente">
-            📝 <span>Registrar Trabajo (pronto)</span>
-          </div>
+          <Link to="/trabajos" className="acceso">
+            📝 <span>Registrar Trabajo</span>
+          </Link>
+          <Link to="/clientes" className="acceso">
+            👥 <span>Clientes</span>
+          </Link>
         </div>
       </div>
     </div>

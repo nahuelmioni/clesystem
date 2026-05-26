@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from .routers import stock, ingresos, clientes, trabajos, auth
+from .routers import stock, ingresos, clientes, trabajos, auth, categorias
 
 app = FastAPI(
     title="CleSystem API",
@@ -40,6 +40,7 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(stock.router)
+app.include_router(categorias.router)
 app.include_router(ingresos.router)
 app.include_router(clientes.router)
 app.include_router(trabajos.router)
@@ -50,7 +51,7 @@ def raiz():
     return {
         "sistema": "CleSystem",
         "estado": "activo",
-        "modulos": ["stock", "ingresos", "clientes", "trabajos"],
+        "modulos": ["stock", "categorias", "ingresos", "clientes", "trabajos"],
         "documentacion": "/docs",
     }
 

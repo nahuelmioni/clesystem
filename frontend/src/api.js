@@ -82,6 +82,15 @@ export const clientesApi = {
     request("/api/clientes", { method: "POST", body: JSON.stringify(datos) }),
   actualizar: (id, datos) =>
     request(`/api/clientes/${id}`, { method: "PUT", body: JSON.stringify(datos) }),
+  eliminar: (id) => request(`/api/clientes/${id}`, { method: "DELETE" }),
+};
+
+// ===== CATEGORIAS =====
+export const categoriasApi = {
+  listar: () => request("/api/categorias"),
+  crear: (nombre) =>
+    request("/api/categorias", { method: "POST", body: JSON.stringify({ nombre }) }),
+  eliminar: (id) => request(`/api/categorias/${id}`, { method: "DELETE" }),
 };
 
 // ===== TRABAJOS =====
@@ -102,6 +111,6 @@ export const trabajosApi = {
   actualizar: (id, datos) =>
     request(`/api/trabajos/${id}`, { method: "PUT", body: JSON.stringify(datos) }),
   actualizarPago: (id, datos) =>
-    request(`/api/trabajos/${id}/pago`, { method: "PATCH", body: JSON.stringify(datos) }),
+    request(`/api/trabajos/${id}/pago`, { method: "PUT", body: JSON.stringify(datos) }),
   cancelar: (id) => request(`/api/trabajos/${id}`, { method: "DELETE" }),
 };

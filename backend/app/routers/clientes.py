@@ -56,3 +56,35 @@ def actualizar_cliente(id_cliente: int, datos: ClienteActualizar):
     sb.table("cliente").update(campos).eq("id_cliente", id_cliente).execute()
     res = sb.table("cliente").select("*").eq("id_cliente", id_cliente).execute()
     return res.data[0]
+
+
+@router.delete("/{id_cliente}")
+def eliminar_cliente(id_cliente: int):
+    """
+    Borra un cliente. Rechaza si tiene trabajos registrados para no
+    romper el historial (los trabajos referencian cliente con ON DELETE
+    RESTRICT, ademas).
+    """
+    sb = get_supabase()
+    existe = (
+        sb.table("cliente").select("nombre, apellido").eq("id_cliente", id_cliente).execute()
+    )
+    if not existe.data:
+        raise HTTPException(404, "Cliente no encontrado")
+
+    trabajos = (
+        sb.table("trabajo")
+        .select("id_trabajo", count="exact")
+        .eq("id_cliente", id_cliente)
+        .execute()
+    )
+    cantidad = trabajos.count if hasattr(trabajos, "count") and trabajos.count is not None else len(trabajos.data or [])
+    if cantidad > 0:
+        raise HTTPException(
+            400,
+            f"No se puede borrar: el cliente tiene {cantidad} trabajo(s) "
+            f"registrado(s). Editalo en vez de borrarlo.",
+        )
+
+    sb.table("cliente").delete().eq("id_cliente", id_cliente).execute()
+    return {"mensaje": "Cliente eliminado"}

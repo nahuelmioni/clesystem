@@ -14,8 +14,9 @@ from pydantic import BaseModel, Field
 class ProductoBase(BaseModel):
     nombre_producto: str = Field(..., min_length=1, max_length=150)
     descripcion: Optional[str] = None
-    categoria: str = Field(..., pattern="^(cristal|cerrajeria|insumo)$")
+    categoria: str = Field(..., min_length=1, max_length=50)
     modelo_auto: Optional[str] = Field(None, max_length=120)
+    codigo_fabricante: Optional[str] = Field(None, max_length=100)
     precio_costo: float = Field(0, ge=0)
     precio_venta: float = Field(0, ge=0)
     activo: bool = True
@@ -30,8 +31,9 @@ class ProductoCrear(ProductoBase):
 class ProductoActualizar(BaseModel):
     nombre_producto: Optional[str] = Field(None, min_length=1, max_length=150)
     descripcion: Optional[str] = None
-    categoria: Optional[str] = Field(None, pattern="^(cristal|cerrajeria|insumo)$")
+    categoria: Optional[str] = Field(None, min_length=1, max_length=50)
     modelo_auto: Optional[str] = Field(None, max_length=120)
+    codigo_fabricante: Optional[str] = Field(None, max_length=100)
     precio_costo: Optional[float] = Field(None, ge=0)
     precio_venta: Optional[float] = Field(None, ge=0)
     activo: Optional[bool] = None
@@ -46,6 +48,19 @@ class ProductoRespuesta(ProductoBase):
     stock_minimo: int
     ubicacion_estanteria: Optional[str] = None
     estado: str  # calculado: "en_stock" | "stock_bajo" | "sin_stock"
+
+
+# ==========================================================================
+# CATEGORIA
+# ==========================================================================
+class CategoriaCrear(BaseModel):
+    nombre: str = Field(..., min_length=1, max_length=50)
+
+
+class CategoriaRespuesta(BaseModel):
+    id_categoria: int
+    nombre: str
+    activo: bool = True
 
 
 # ==========================================================================

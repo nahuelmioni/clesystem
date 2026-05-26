@@ -25,6 +25,18 @@ export default function Clientes() {
     }
   }, [buscar]);
 
+  async function borrar(c) {
+    const nombre = `${c.nombre} ${c.apellido || ""}`.trim();
+    if (!confirm(`¿Borrar al cliente "${nombre}"? Esta acción no se puede deshacer.`))
+      return;
+    try {
+      await clientesApi.eliminar(c.id_cliente);
+      cargar();
+    } catch (e) {
+      alert("No se pudo borrar: " + e.message);
+    }
+  }
+
   useEffect(() => {
     const t = setTimeout(cargar, 300);
     return () => clearTimeout(t);
@@ -94,6 +106,13 @@ export default function Clientes() {
                       title="Editar"
                     >
                       ✎
+                    </button>
+                    <button
+                      className="btn-icon btn-del"
+                      onClick={() => borrar(c)}
+                      title="Borrar"
+                    >
+                      🗑
                     </button>
                   </td>
                 </tr>
