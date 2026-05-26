@@ -6,6 +6,25 @@
 
 ---
 
+## 0. Producción
+
+| | URL |
+|---|---|
+| App (Vercel) | https://clesystem.vercel.app |
+| API (Render) | https://clesystem.onrender.com |
+| Docs API | https://clesystem.onrender.com/docs |
+| Repo (GitHub) | https://github.com/nahuelmioni/clesystem |
+
+Credenciales de prueba: `admin` / `admin123`
+
+**Limitación de Render free**: el backend se duerme tras 15 min de
+inactividad. Primer request después de dormirse tarda ~50 seg.
+
+Para redeployar: `git push` a `main` → Vercel y Render se actualizan
+automáticamente.
+
+---
+
 ## 1. Qué es esto
 
 CleSystem es un sistema de gestión web para **Parabrisas La Cle**, una PyME
