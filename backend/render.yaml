@@ -1,0 +1,18 @@
+# Configuracion de Render para el backend FastAPI
+# Render lee este archivo automaticamente cuando conectas el repo.
+services:
+  - type: web
+    name: clesystem-api
+    env: python
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
