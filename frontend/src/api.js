@@ -4,17 +4,62 @@
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
+// Render free tier duerme el backend tras 15 min de inactividad. El primer
+// request al despertarlo puede tardar 30-50 seg y a veces el navegador lo
+// corta como "Failed to fetch". Reintentamos varias veces antes de
+// rendirnos para tapar ese cold-start de forma transparente al usuario.
+const REINTENTOS = 3;
+const ESPERA_INICIAL_MS = 1500;
+
+async function fetchConRetry(url, opts, intento = 0) {
+  try {
+    const ctrl = new AbortController();
+    const timeout = setTimeout(() => ctrl.abort(), 60000); // 60s max por intento
+    const res = await fetch(url, { ...opts, signal: ctrl.signal });
+    clearTimeout(timeout);
+    return res;
+  } catch (e) {
+    // TypeError = "Failed to fetch" o AbortError = timeout: ambos indican
+    // que el backend probablemente esta durmiendo. Reintentamos.
+    const esRed = e.name === "TypeError" || e.name === "AbortError";
+    if (esRed && intento < REINTENTOS) {
+      const espera = ESPERA_INICIAL_MS * Math.pow(2, intento);
+      await new Promise((r) => setTimeout(r, espera));
+      return fetchConRetry(url, opts, intento + 1);
+    }
+    throw e;
+  }
+}
+
 async function request(endpoint, options = {}) {
-  const res = await fetch(`${API_URL}${endpoint}`, {
-    headers: { "Content-Type": "application/json" },
-    ...options,
-  });
+  let res;
+  try {
+    res = await fetchConRetry(`${API_URL}${endpoint}`, {
+      headers: { "Content-Type": "application/json" },
+      ...options,
+    });
+  } catch (e) {
+    // Ya agotamos los reintentos: damos un mensaje mas claro
+    if (e.name === "TypeError" || e.name === "AbortError") {
+      throw new Error(
+        "No se pudo conectar con el servidor. " +
+        "Si es la primera consulta del día puede tardar hasta un minuto en despertarse — probá de nuevo."
+      );
+    }
+    throw e;
+  }
   if (!res.ok) {
     const error = await res.json().catch(() => ({ detail: "Error del servidor" }));
     throw new Error(error.detail || `Error ${res.status}`);
   }
   if (res.status === 204) return null;
   return res.json();
+}
+
+// Ping silencioso al backend para "despertarlo" sin esperar al primer
+// request real. Se llama desde el login.
+export function despertarBackend() {
+  fetch(`${API_URL}/api/health`).catch(() => {});
 }
 
 // ===== AUTH =====

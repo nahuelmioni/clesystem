@@ -1,14 +1,19 @@
 // CleSystem - Pantalla de Login
 // Sistema mono-usuario, login simple (proyecto academico).
 
-import { useState } from "react";
-import { authApi, auth } from "../api";
+import { useState, useEffect } from "react";
+import { authApi, auth, despertarBackend } from "../api";
 
 export default function Login({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [cargando, setCargando] = useState(false);
   const [err, setErr] = useState(null);
+
+  // Apenas se carga la pantalla, hacemos un ping al backend para que se
+  // despierte mientras el usuario tipea. Asi, cuando hace login, el back
+  // ya esta listo en vez de hacer cold-start en ese momento.
+  useEffect(() => { despertarBackend(); }, []);
 
   async function entrar(e) {
     e.preventDefault();
